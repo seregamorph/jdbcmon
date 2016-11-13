@@ -3,7 +3,10 @@ package org.jdbcmon;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.sql.ResultSet;
 import java.sql.Statement;
+
+import static org.jdbcmon.Utils.matches;
 
 class StatementProxy {
     private static final Class[] STATEMENT_PROXY_INTERFACES = {Statement.class};
@@ -19,7 +22,20 @@ class StatementProxy {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            String methodName = method.getName();
+            Throwable exception = null;
+
+            if (matches(method, ResultSet.class, "executeQuery", String.class)) {
+                String sql = (String) args[0];
+                long startNanos = System.nanoTime();
+                try {
+                    return delegate.executeQuery(sql);
+                } catch (Throwable e) {
+                    exception = e;
+                    throw e;
+                } finally {
+                    sqlStat.registerExecute(sql, System.nanoTime() - startNanos, exception);
+                }
+            }
 
             return method.invoke(delegate, args);
         }

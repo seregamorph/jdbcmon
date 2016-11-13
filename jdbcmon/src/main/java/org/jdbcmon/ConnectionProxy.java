@@ -6,6 +6,7 @@ import java.lang.reflect.Proxy;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 class ConnectionProxy {
     private static final Class[] CONNECTION_PROXY_INTERFACES = {Connection.class};
@@ -24,8 +25,11 @@ class ConnectionProxy {
             String methodName = method.getName();
             Throwable exception = null;
 
-            if (PreparedStatement.class.isAssignableFrom(method.getReturnType()) && "prepareStatement".equals(methodName)
-                    && args.length > 0 && args[0] instanceof String) {
+            if (Statement.class.isAssignableFrom(method.getReturnType()) && "createStatement".equals(methodName)) {
+                Statement delegateS = (Statement) method.invoke(delegate, args);
+                return StatementProxy.proxy(delegateS, sqlStat);
+            } else if (PreparedStatement.class.isAssignableFrom(method.getReturnType()) && "prepareStatement".equals(methodName)
+                    && args.length >= 1 && args[0] instanceof String) {
                 String sql = (String) args[0];
                 try {
                     PreparedStatement delegatePS = (PreparedStatement) method.invoke(delegate, args);
@@ -37,7 +41,7 @@ class ConnectionProxy {
                     sqlStat.registerPrepare(sql, exception);
                 }
             } else if (CallableStatement.class.isAssignableFrom(method.getReturnType()) && "prepareCall".equals(methodName)
-                    && args.length > 0 && args[0] instanceof String) {
+                    && args.length >= 1 && args[0] instanceof String) {
                 String sql = (String) args[0];
                 try {
                     CallableStatement delegateCS = (CallableStatement) method.invoke(delegate, args);
