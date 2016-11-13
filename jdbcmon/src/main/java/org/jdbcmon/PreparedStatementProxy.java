@@ -12,7 +12,7 @@ class PreparedStatementProxy {
     private static final Class[] PREPARED_STATEMENT_PROXY_INTERFACES = {PreparedStatement.class};
 
     static class PreparedStatementInvocationHandler<T extends PreparedStatement> extends StatementProxy.StatementInvocationHandler<T> {
-        private final String sql;
+        final String sql;
 
         PreparedStatementInvocationHandler(String sql, T delegate, SqlStat sqlStat) {
             super(delegate, sqlStat);
@@ -23,7 +23,17 @@ class PreparedStatementProxy {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             Throwable exception = null;
 
-            if (matches(method, ResultSet.class, "executeQuery")) {
+            if (matches(method, boolean.class, "execute")) {
+                long startNanos = System.nanoTime();
+                try {
+                    return delegate.execute();
+                } catch (Throwable e) {
+                    exception = e;
+                    throw e;
+                } finally {
+                    sqlStat.registerExecute(sql, System.nanoTime() - startNanos, exception);
+                }
+            } else if (matches(method, ResultSet.class, "executeQuery")) {
                 long startNanos = System.nanoTime();
                 try {
                     return delegate.executeQuery();

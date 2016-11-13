@@ -2,6 +2,7 @@ package org.jdbcmon;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -25,6 +26,20 @@ class ConnectionProxy {
                     throw e;
                 } finally {
                     sqlStat.registerPrepare(sql, exception);
+                }
+            } else {
+                if (CallableStatement.class.isAssignableFrom(method.getReturnType()) && "prepareCall".equals(methodName)
+                        && args.length > 0 && args[0] instanceof String) {
+                    sql = (String) args[0];
+                    try {
+                        CallableStatement delegateCS = (CallableStatement) method.invoke(delegate, args);
+                        return CallableStatementProxy.proxy(sql, delegateCS, sqlStat);
+                    } catch (Throwable e) {
+                        exception = e;
+                        throw e;
+                    } finally {
+                        sqlStat.registerPrepare(sql, exception);
+                    }
                 }
             }
 
