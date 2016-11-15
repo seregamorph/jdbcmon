@@ -1,5 +1,6 @@
 package org.jdbcmon;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.TreeMap;
@@ -27,9 +28,21 @@ class Utils {
         };
     }
 
-    static boolean matches(Method method, Class<?> returnType, String methodName, Class<?>... argTypes) {
-        return method.getReturnType() == returnType &&
-                method.getName().equals(methodName) &&
+    @SuppressWarnings("unchecked")
+    static <T> T inv0ke(Method method, Object obj, Object... args) throws Throwable {
+        try {
+            return (T) method.invoke(obj, args);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
+    }
+
+    static boolean matches(Method method, String methodName, Class<?>... argTypes) {
+        return method.getName().equals(methodName) &&
                 Arrays.equals(method.getParameterTypes(), argTypes);
+    }
+
+    static boolean matches(Method method, Class<?> returnType, String methodName, Class<?>... argTypes) {
+        return method.getReturnType() == returnType && matches(method, methodName, argTypes);
     }
 }

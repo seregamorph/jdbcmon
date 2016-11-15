@@ -4,8 +4,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
+import static org.jdbcmon.Utils.inv0ke;
 import static org.jdbcmon.Utils.matches;
 
 class PreparedStatementProxy {
@@ -23,20 +23,20 @@ class PreparedStatementProxy {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             Throwable exception = null;
 
-            if (matches(method, boolean.class, "execute")) {
+            if (matches(method, "execute")) {
                 long startNanos = System.nanoTime();
                 try {
-                    return delegate.execute();
+                    return inv0ke(method, delegate, args);
                 } catch (Throwable e) {
                     exception = e;
                     throw e;
                 } finally {
                     sqlStat.registerExecute(sql, System.nanoTime() - startNanos, exception);
                 }
-            } else if (matches(method, ResultSet.class, "executeQuery")) {
+            } else if (matches(method, "executeQuery")) {
                 long startNanos = System.nanoTime();
                 try {
-                    return delegate.executeQuery();
+                    return inv0ke(method, delegate, args);
                 } catch (Throwable e) {
                     exception = e;
                     throw e;

@@ -3,9 +3,9 @@ package org.jdbcmon;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.sql.ResultSet;
 import java.sql.Statement;
 
+import static org.jdbcmon.Utils.inv0ke;
 import static org.jdbcmon.Utils.matches;
 
 class StatementProxy {
@@ -24,11 +24,11 @@ class StatementProxy {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             Throwable exception = null;
 
-            if (matches(method, ResultSet.class, "executeQuery", String.class)) {
+            if (matches(method, "executeQuery", String.class)) {
                 String sql = (String) args[0];
                 long startNanos = System.nanoTime();
                 try {
-                    return delegate.executeQuery(sql);
+                    return inv0ke(method, delegate, args);
                 } catch (Throwable e) {
                     exception = e;
                     throw e;
@@ -37,7 +37,7 @@ class StatementProxy {
                 }
             }
 
-            return method.invoke(delegate, args);
+            return inv0ke(method, delegate, args);
         }
     }
 
