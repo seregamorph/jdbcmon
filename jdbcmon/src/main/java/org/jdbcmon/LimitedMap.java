@@ -9,15 +9,16 @@ import java.util.function.Supplier;
 
 /**
  * Limited size map.
- * If size exceeds limits, just creates a new object with supplier and return it, but do not replace existing old
+ * If size exceeds limits, just creates a new object with supplier and returns it, but does not replace existing old
  * key values to prevent gc troubles with old generation.
+ * Non-thread safe, requires external synchronization.
  *
  * @param <K>
  * @param <V>
  */
 class LimitedMap<K, V> {
-    private final int size;
 
+    private final int size;
     private final Map<K, V> map;
 
     LimitedMap(int size) {
