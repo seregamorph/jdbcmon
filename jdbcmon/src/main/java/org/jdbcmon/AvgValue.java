@@ -6,6 +6,7 @@ import java.util.Locale;
  * Value with statistics approximation
  */
 class AvgValue {
+
     private final double avgFactor;
 
     private double currentValue;

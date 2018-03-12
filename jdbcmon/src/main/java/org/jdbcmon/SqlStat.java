@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.Comparator.reverseOrder;
 
 class SqlStat {
+
     private static final double AVG_FACTOR = 0.2d;
     private static final int MAP_SIZE = 256;
     /**

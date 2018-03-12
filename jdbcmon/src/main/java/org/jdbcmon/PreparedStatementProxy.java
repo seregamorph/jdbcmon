@@ -5,10 +5,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.PreparedStatement;
 
-import static org.jdbcmon.Utils.inv0ke;
+import static org.jdbcmon.Utils.invokeTarget;
 import static org.jdbcmon.Utils.matches;
 
 class PreparedStatementProxy {
+
     private static final Class[] PREPARED_STATEMENT_PROXY_INTERFACES = {PreparedStatement.class};
 
     static class PreparedStatementInvocationHandler<T extends PreparedStatement> extends StatementProxy.StatementInvocationHandler<T> {
@@ -26,7 +27,7 @@ class PreparedStatementProxy {
             if (matches(method, "execute")) {
                 long startNanos = System.nanoTime();
                 try {
-                    return inv0ke(method, delegate, args);
+                    return invokeTarget(method, delegate, args);
                 } catch (Throwable e) {
                     exception = e;
                     throw e;
@@ -36,7 +37,7 @@ class PreparedStatementProxy {
             } else if (matches(method, "executeQuery")) {
                 long startNanos = System.nanoTime();
                 try {
-                    return inv0ke(method, delegate, args);
+                    return invokeTarget(method, delegate, args);
                 } catch (Throwable e) {
                     exception = e;
                     throw e;

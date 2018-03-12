@@ -5,10 +5,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Statement;
 
-import static org.jdbcmon.Utils.inv0ke;
+import static org.jdbcmon.Utils.invokeTarget;
 import static org.jdbcmon.Utils.matches;
 
 class StatementProxy {
+
     private static final Class[] STATEMENT_PROXY_INTERFACES = {Statement.class};
 
     static class StatementInvocationHandler<T extends Statement> implements InvocationHandler {
@@ -28,7 +29,7 @@ class StatementProxy {
                 String sql = (String) args[0];
                 long startNanos = System.nanoTime();
                 try {
-                    return inv0ke(method, delegate, args);
+                    return invokeTarget(method, delegate, args);
                 } catch (Throwable e) {
                     exception = e;
                     throw e;
@@ -37,7 +38,7 @@ class StatementProxy {
                 }
             }
 
-            return inv0ke(method, delegate, args);
+            return invokeTarget(method, delegate, args);
         }
     }
 

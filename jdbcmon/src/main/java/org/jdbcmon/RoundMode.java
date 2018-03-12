@@ -1,6 +1,7 @@
 package org.jdbcmon;
 
 enum RoundMode {
+
     UP() {
         @Override
         long round(double value) {

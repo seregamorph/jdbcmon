@@ -12,6 +12,7 @@ import static org.jdbcmon.Utils.checkArgument;
  * Logarithmic statistics
  */
 class LogStat {
+
     private static final double DEFAULT_MANTISSA = 1.0d;
     private static final double DEFAULT_BASE = Math.sqrt(2.0d);
     private static final RoundMode DEFAULT_ROUND_MODE = RoundMode.ROUND;

@@ -10,6 +10,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 class Utils {
+
     static void checkArgument(boolean arg, String msg, Object... args) {
         if (!arg) {
             String fullMsg = String.format(msg, args);
@@ -28,10 +29,9 @@ class Utils {
         };
     }
 
-    @SuppressWarnings("unchecked")
-    static <T> T inv0ke(Method method, Object obj, Object... args) throws Throwable {
+    static Object invokeTarget(Method method, Object obj, Object... args) throws Throwable {
         try {
-            return (T) method.invoke(obj, args);
+            return method.invoke(obj, args);
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }

@@ -6,6 +6,7 @@ import java.lang.reflect.Proxy;
 import java.sql.CallableStatement;
 
 class CallableStatementProxy {
+
     private static final Class[] CALLABLE_STATEMENT_PROXY_INTERFACES = {CallableStatement.class};
 
     static class CallableStatementInvocationHandler<T extends CallableStatement> extends PreparedStatementProxy.PreparedStatementInvocationHandler<T> {

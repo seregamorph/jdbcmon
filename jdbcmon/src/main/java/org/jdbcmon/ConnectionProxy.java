@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 class ConnectionProxy {
+
     private static final Class[] CONNECTION_PROXY_INTERFACES = {Connection.class};
 
     private static class ConnectionInvocationHandler implements InvocationHandler {
