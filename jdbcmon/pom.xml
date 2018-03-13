@@ -10,8 +10,6 @@
 
     <artifactId>jdbcmon</artifactId>
 
-    <name>jdbcmon-parent</name>
-
     <build>
         <plugins>
             <plugin>
