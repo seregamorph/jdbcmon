@@ -49,4 +49,8 @@ class LimitedMap<K, V> {
     boolean isEmpty() {
         return map.isEmpty();
     }
+
+    void clear() {
+        map.clear();
+    }
 }

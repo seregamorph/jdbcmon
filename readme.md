@@ -1,19 +1,33 @@
 
+Install the library locally (does not present in global repos):
+
+    mvn clean install
+
+Add artifact dependency to your project
+
     mavenLocal()
     ...
     compile "org.jdbcmon:jdbcmon:1.0-SNAPSHOT"
 
+or
+
+    <dependency>
+        <groupId>org.jdbcmon</groupId>
+        <artifactId>jdbcmon</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+
+Wrap your DataSource to MonitoringDataSource
+
     MonitoringDataSource monitoringDataSource = new MonitoringDataSource(pooledDataSource);
     JdbcTemplate jdbc = new JdbcTemplate(monitoringDataSource);
 
-    @DirtiesContext
+Print the SQL report
+
     ...
     List<Map<String, ?>> report = monitoringDataSource.report();
-    try {
-        System.out.println(new ObjectMapper().writeValueAsString(report));
-    } catch (JsonProcessingException e) {
-        e.printStackTrace();
-    }
-    System.out.println("-----------------------");
-    report.forEach(System.out::println);
-    System.out.println("-----------------------");
+    String strReport = new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .writeValueAsString(report);
+    System.out.println(strReport);
+

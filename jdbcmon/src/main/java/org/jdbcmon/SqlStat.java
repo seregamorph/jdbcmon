@@ -1,12 +1,21 @@
 package org.jdbcmon;
 
+import static java.util.Comparator.reverseOrder;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.util.Comparator.reverseOrder;
 
 class SqlStat {
 
@@ -124,9 +133,13 @@ class SqlStat {
         return String.format(Locale.ENGLISH, "%.2f", value);
     }
 
-//    synchronized void reset() {
-//        sqlMap.clear();
-//    }
+    synchronized void reset() {
+        sqlMap.clear();
+        totalPrepareCount = 0L;
+        totalExecuteCount = 0L;
+        totalExecuteTimeNanos = 0L;
+        totalFetchTimeNanos = 0L;
+    }
 
     //@Nonnull
     private SqlStatementStat getSqlStat(/*@Nullable*/ String sql) {

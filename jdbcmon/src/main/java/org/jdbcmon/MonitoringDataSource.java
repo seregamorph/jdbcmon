@@ -23,6 +23,10 @@ public class MonitoringDataSource implements DataSource {
         return sqlStat.report(null, false);
     }
 
+    public void reset() {
+        sqlStat.reset();
+    }
+
     @Override
     public Connection getConnection() throws SQLException {
         Connection delegateConnection = delegate.getConnection();
@@ -31,7 +35,8 @@ public class MonitoringDataSource implements DataSource {
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return delegate.getConnection(username, password);
+        Connection delegateConnection = delegate.getConnection(username, password);
+        return ConnectionProxy.proxy(delegateConnection, sqlStat);
     }
 
     @Override
